@@ -16,12 +16,8 @@ class PanaromaStitcher():
         all_images = sorted(glob.glob(imf + os.sep + '*'))
         print('Found {} Images for stitching'.format(len(all_images)))
 
-        # Store all homography matrices and initialize the panorama image
         homography_matrix_list = []
 
-        # first_img = cv2.imread(all_images[0])
-
-        # stitched_image = imutils.resize(first_img, width=400)
         stitched_image = None
 
         img_idx = 1
@@ -46,7 +42,7 @@ class PanaromaStitcher():
 
 
 
-    def stitch(self, img1, img2, ratio=0.75, thresh=4.0):
+    def stitch(self, img1, img2):
         
         keypoints1, keypoints2 = self.detect_and_match_features(img1, img2)
 
@@ -107,15 +103,12 @@ class PanaromaStitcher():
 
 
         for i in range(num_iters):
-            # Randomly sample points
             random_indices = np.random.choice(range(len(points1)), samples, replace=False)
             random_points1 = points1[random_indices]
             random_points2 = points2[random_indices]
             
-            # Compute homography from sampled points
             H = computeHomography(random_points1, random_points2)
             
-            # Transform all points in points1 using the homography matrix
             transformed_points = []
             for pt in points1:
                 x, y = pt[0], pt[1]
